@@ -1,41 +1,69 @@
+# Classification template
 
-El siguiente codigo me da el errro: ValueError: The number of classes has to be greater than one got 1 class.
-
-
-from sklearn.svm import SVC
+# Importing the libraries
+from matplotlib.colors import ListedColormap
+from sklearn.metrics import confusion_matrix
+from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
-from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.svm import SVC
 import numpy as np
+import matplotlib.pyplot as plt
+import pandas as pd
 
-# Leemos los archivos
-with open('datos.txt', 'r') as file:
-    archivos1 = file.readlines()
-with open('datos2.txt', 'r') as file:
-    archivos2 = file.readlines()
+# Importing the dataset
+dataset = pd.read_csv('social.csv')
+X = dataset.iloc[:, [2, 3]].values
+y = dataset.iloc[:, 4].values
 
-# Necesitamos tener los archivos en un solo arreglo, cada elemento del arreglo es un archivo
-archivos = archivos1 + archivos2
+# Splitting the dataset into the Training set and Test set
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.25, random_state=0)
 
-vectorizer = CountVectorizer()
-x = vectorizer.fit_transform(archivos)
-"""
+# Feature Scaling
+sc = StandardScaler()
+X_train = sc.fit_transform(X_train)
+X_test = sc.transform(X_test)
 
-vect es una matriz dispersa, las matrices dispersas son una forma eficiente de representar matrices que tienen una gran cantidad de ceros. En lugar de alamacenar todos los valores cero, solo almeacenan los valores no cero y sus ubicaciones.
+# Fitting SVM to the Training set
+classifier = SVC(kernel='linear', random_state=0)
+classifier.fit(X_train, y_train)
 
-El primer número en los paréntesis (0, 32) es el indice del documento en tu conjunto de datos (en este caso, es la primera linea de texto o el primer documento)
-El segundo número en los paréntesis es el indice del token o palabra en el vocabulario que se ha construido a partir de todos los documentos. 
-El tercer número es el recuento de ese token en ese docuemtno
+# Predicting the Test set results
+y_pred = classifier.predict(X_test)
 
-"""
+# Making the Confusion Matrix
+cm = confusion_matrix(y_test, y_pred)
 
-# Dividisión de los datos en entrenamiento y prueba
-x_train, x_test, y_train, y_test = train_test_split(
-    x, np.array([0, 1]), test_size=0.2)
+# Visualising the Training set results
+X_set, y_set = X_train, y_train
+X1, X2 = np.meshgrid(np.arange(start=X_set[:, 0].min() - 1, stop=X_set[:, 0].max() + 1, step=0.01),
+                     np.arange(start=X_set[:, 1].min() - 1, stop=X_set[:, 1].max() + 1, step=0.01))
+plt.contourf(X1, X2, classifier.predict(np.array([X1.ravel(), X2.ravel()]).T).reshape(X1.shape),
+             alpha=0.75, cmap=ListedColormap(('red', 'green')))
+plt.xlim(X1.min(), X1.max())
+plt.ylim(X2.min(), X2.max())
+for i, j in enumerate(np.unique(y_set)):
+    plt.scatter(X_set[y_set == j, 0], X_set[y_set == j, 1],
+                c=ListedColormap(('red', 'green'))(i), label=j)
+plt.title('SVM (Training set)')
+plt.xlabel('Age')
+plt.ylabel('Estimated Salary')
+plt.legend()
+plt.show()
 
-# Entrenamiento del modelo
-clf = SVC(kernel='linear', C=1, random_state=42)
-clf.fit(x_train, y_train)
-
-# Predicción y resultados
-ypred = clf.predict(x_test)
-print("Predicción: ", clf.score(x_test, y_test))
+# Visualising the Test set results
+X_set, y_set = X_test, y_test
+X1, X2 = np.meshgrid(np.arange(start=X_set[:, 0].min() - 1, stop=X_set[:, 0].max() + 1, step=0.01),
+                     np.arange(start=X_set[:, 1].min() - 1, stop=X_set[:, 1].max() + 1, step=0.01))
+plt.contourf(X1, X2, classifier.predict(np.array([X1.ravel(), X2.ravel()]).T).reshape(X1.shape),
+             alpha=0.75, cmap=ListedColormap(('red', 'green')))
+plt.xlim(X1.min(), X1.max())
+plt.ylim(X2.min(), X2.max())
+for i, j in enumerate(np.unique(y_set)):
+    plt.scatter(X_set[y_set == j, 0], X_set[y_set == j, 1],
+                c=ListedColormap(('red', 'green'))(i), label=j)
+plt.title('SVM (Test set)')
+plt.xlabel('Age')
+plt.ylabel('Estimated Salary')
+plt.legend()
+plt.show()
