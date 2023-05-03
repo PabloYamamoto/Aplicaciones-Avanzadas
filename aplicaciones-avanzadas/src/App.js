@@ -1,23 +1,12 @@
-import logo from './logo.svg';
 import './App.css';
+import MainContent from './Components/MainContent';
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h1>Aplicaciones Avanzadas</h1>
+      <h2 style={{fontWeight:400}}>Pablo Yamamoto | Santiago Kohn | Gabriel Dichi | Gianluca Beltran</h2>
+      <MainContent />
     </div>
   );
 }

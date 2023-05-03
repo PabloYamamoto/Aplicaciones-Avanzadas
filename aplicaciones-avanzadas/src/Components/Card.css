@@ -1,0 +1,29 @@
+.card {
+  width: 45%;
+  height: 480px;
+  margin: 1rem;
+  border-radius: 10px;
+  box-shadow: 0 0 1rem rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.success-border {
+  border: 2px solid rgb(104, 203, 104);
+  border-width: 3px;
+}
+
+.error-border {
+  border: 2px solid rgb(201, 94, 94);
+  border-width: 3px;
+}
+
+.content-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
