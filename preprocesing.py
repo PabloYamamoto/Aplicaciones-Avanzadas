@@ -49,8 +49,15 @@ caracteristicas_seleccionadas = selector.fit_transform(caracteristicas, np.conca
 
 
 # ==================================== Entrenamiento del modelo ====================================
-# Dividimos los datos en conjuntos de entrenamiento y prueba
-X_train, X_test, y_train, y_test = train_test_split(caracteristicas_seleccionadas, np.concatenate((np.zeros(datos_originales.shape[0]), np.ones(datos_plagiados.shape[0])), axis=0), test_size=0.2, random_state=0)
+# División de los datos en conjuntos de entrenamiento y validación
+X_originales = caracteristicas_originales.toarray()
+# Etiquetas para los textos originales (0)
+y_originales = np.zeros(len(datos_preprocesados_originales))
+X_entrenamiento, X_validacion, y_entrenamiento, y_validacion = train_test_split(
+    X_originales, y_originales, test_size=0.2, random_state=42)
 
-# Entrenamos el modelo
-clasificador = SVC(kernel='linear', random_state=0)
+# Entrenamiento del modelo SVM
+clasificador_svm = SVC(kernel='linear')
+clasificador_svm.fit(X_entrenamiento, y_entrenamiento)
+
+
