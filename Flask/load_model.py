@@ -4,7 +4,7 @@ import numpy as np
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics.pairwise import cosine_similarity as co
 
-model = joblib.load("model.pkl")
+model = joblib.load("../trained_models/SVM_2.pkl")
 
 def lcs_norm_word(answer_text: str, source_text: str):
     a_text = answer_text.split()
@@ -45,9 +45,12 @@ def get_features(answer_text: str, source_text: str):
 
     return (lcs, cos)
 
-def predict(model, answer_text, source_text):
+def predict(answer_text, source_text):
     lcs, cos = get_features(answer_text, source_text)
 
-    features = [[lcs, cos]]
+    features = [lcs, cos]
+    print(features)
 
-    return model.predict(features)[0]
+    return model.predict([features])[0]
+
+print(predict("I am a student who want to pass the exam", "I am a student who study in a university"))

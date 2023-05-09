@@ -78,10 +78,7 @@ def grafh_df(df):
     groups = df.groupby('etiqueta')
 
     for name, group in groups:
-        plt.plot(group['lcs_values'], group['cos_sim'], marker='o', linestyle='', markersize=12, label=name)
-
-    # Crear la gráfica de puntos con diferentes colores para cada valor de la columna 'z'
-    # plt.scatter(df['lcs_values'], df['cos_sim'] , c=df['etiqueta'])
+        plt.plot(group['cos_sim'], group['etiqueta'], marker='o', linestyle='', markersize=12, label=name)
 
     # Añadir etiquetas y título a la gráfica
     plt.legend()
@@ -90,10 +87,13 @@ def grafh_df(df):
     plt.title('Gráfica de puntos con diferencia de color de plagio o no.')
 
     # Mostrar la gráfica
-    plt.show()
-    pass
+    # plt.show()
 
-n = 0
+    # Guarda la gráfica en formato PNG
+    plt.savefig('grafica3.png')
+    return 0
+
+n = 10000
 with open("Data/train_snli.txt", 'r') as file:
     data  = file.read().lower().split("\n")
 
@@ -112,17 +112,17 @@ df['etiqueta'] = etiquetas
 
 df["lcs_values"] = create_lcs_features(df)
 df["cos_sim"] = get_cos_sim(df)
-# grafh_df(df)
+grafh_df(df)
 # print(df.head())
 
-X_train, X_test, y_train, y_test = train_test_split(df[['lcs_values', 'cos_sim']], df[['etiqueta']], test_size=0.2, random_state=0)
+X_train, X_test, y_train, y_test = train_test_split(df[['cos_sim']], df[['etiqueta']], test_size=0.2, random_state=0)
 print(X_train.shape, X_test.shape, y_train.shape, y_test.shape)
-model = svm.SVC()
+model = svm.SVC(kernel='linear')
 
 ## DONE: Train the model
 model.fit(X_train, y_train)
 # Save the trained model
-joblib.dump(model,  "model2.pkl")
+# joblib.dump(model,  "model2.pkl")
 
 y_predict = model.predict(X_test)
 acc = model.score(X_test, y_test)
